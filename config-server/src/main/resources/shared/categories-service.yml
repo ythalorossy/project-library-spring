@@ -1,0 +1,5 @@
+
+server:
+  servlet:
+    context-path: /categories
+  port: 8020

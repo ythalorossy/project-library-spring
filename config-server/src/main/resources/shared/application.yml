@@ -1,0 +1,13 @@
+#This configuration file will hold common configs to be shared among all files
+eureka:
+  instance:
+    prefer-ip-address: false
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka #where our register server is located
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8080/uaa/users/current # which uri will be used to find the user
+      token-info-uri: http://localhost:8080/uaa/oauth/check_token

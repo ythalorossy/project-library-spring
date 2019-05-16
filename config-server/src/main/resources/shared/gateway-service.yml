@@ -1,0 +1,33 @@
+zuul:
+  ignored-services: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    auth-service:
+      path: /uaa/** 
+      url: auth-service
+      strip-prefix: false
+      sensitive-headers:
+
+    account-service:
+      path: /accounts/**
+      service-id: account-service
+      strip-prefix: false
+      sensitive-headers:
+
+    categories:
+      path: /categories/**
+      service-id: categories-service
+      strip-prefix: false
+      sensitive-hearders:
+        
+    books:
+      path: /books/**
+      service-id: books-service
+      strip-prefix: false
+      sensitive-hearders:
+
+server:
+  port: 8080
