@@ -33,6 +33,14 @@
 - [Spring Cloud Netflix](https://spring.io/projects/spring-cloud-netflix)
 - [Spring Cloud Netflix Zuul](https://cloud.spring.io/spring-cloud-netflix/multi/multi__router_and_filter_zuul.html)
 
+## Containers
+- [Docker Compose](https://docs.docker.com/compose/)
+
+The project are using Docker Compose to up a mongoDB and mongo-express containers.
+
+Upping the containers:  
+`docker-compose up -d`
+
 ## References
 [Spring Boot Reference Guide](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/)
 [Spring Boot Reference Documentation](https://docs.spring.io/spring-boot/docs/2.2.x/reference/html/)
