@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("#oauth2.hasScope('server')")
+    @PreAuthorize("#oauth2.hasScope('server')") // Only clients with scope server can create user
     public UserDto createUser(@Valid @RequestBody UserRegistrationDto userRegistration) {
         User savedUser = userService.create(toUser(userRegistration));
         return toDto(savedUser);
