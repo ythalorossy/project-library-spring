@@ -3,3 +3,12 @@ server:
   servlet:
     context-path: /categories
   port: 8020
+
+  security:
+  oauth2:
+    client:
+      clientId: categories-service
+      clientSecret: 1234
+      accessTokenUri: http://localhost:8080/uaa/oauth/token
+      grant-type: client_credentials
+      scope: server

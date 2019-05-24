@@ -53,4 +53,16 @@ public class InitialValuesChangeLog {
         mongoTemplate.save(accountServiceClientDetails);
     }
 
+    @ChangeSet(order = "004", id = "004_insertCategoriesClientDetails", author = "Ythalo Rossy Saldanha Lira <ythalorossy@gmail.com>")
+    public void insertCategoriesClientDetails(MongoTemplate mongoTemplate) {
+        
+        AuthClientDetails accountServiceClientDetails = new AuthClientDetails();
+        accountServiceClientDetails.setClientId("categories-service");
+        accountServiceClientDetails.setClientSecret("$2a$10$fWNTd3H.u7G/aNROVQSifebOkZ2xzU5nUPOCI2Ld42M8E25/ljJqK");    //1234
+        accountServiceClientDetails.setScopes("server");
+        accountServiceClientDetails.setGrantTypes("refresh_token,client_credentials");
+
+        mongoTemplate.save(accountServiceClientDetails);
+    }
+
 }
