@@ -36,7 +36,7 @@ public class AuthClientDetails implements ClientDetails {
 
 	private Integer refreshTokenValidity;
 
-	private String additionalInformation;
+	// private String additionalInformation;
 
 	@Override
 	public String getClientId() {
@@ -140,6 +140,6 @@ public class AuthClientDetails implements ClientDetails {
 	}
 
 	public void setAdditionalInformation(String additionalInformation) {
-		this.additionalInformation = additionalInformation;
+		// this.additionalInformation = additionalInformation;
 	}
 }
