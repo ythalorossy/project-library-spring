@@ -2,8 +2,8 @@
 logging:
   level:
     root: info
-    org.springframework.web: info
-    org.springframework.security: debug
+    "[org.springframework.web]": info
+    "[org.springframework.security]": debug
 
 spring:
   application:
