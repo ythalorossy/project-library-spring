@@ -24,7 +24,7 @@
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Spring Web MVC Framework](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-spring-mvc)
 - [Spring Security](https://spring.io/projects/spring-security)
-- [Spring Security OAuth](https://spring.io/projects/spring-security-oauth)
+- [Spring Authorization Server](https://docs.spring.io/spring-authorization-server/reference/getting-started.html)
 - [Spring Data](https://spring.io/projects/spring-data)
 - [Spring Data MongoDB](https://spring.io/projects/spring-data-mongodb)
 - [Spring Cloud Config](https://cloud.spring.io/spring-cloud-config)
