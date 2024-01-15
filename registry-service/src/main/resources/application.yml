@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: registry-service
+  config:
+    import:
+    - "optional:configserver:http://user:1234@localhost:8888"
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  
