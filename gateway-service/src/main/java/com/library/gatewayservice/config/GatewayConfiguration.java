@@ -20,6 +20,9 @@ public class GatewayConfiguration {
                 .route("categories", r -> r
                     .path("/categories/**")
                     .uri("lb://categories-service"))
+                .route("resource-server", r -> r
+                    .path("/product/**")
+                    .uri("lb://resource-server"))                    
                 .build();
     }
 }
