@@ -40,7 +40,7 @@
     <!-- <module>account-service</module> -->
     <module>books-service</module>
     <module>categories-service</module>
-    <!-- <module>gateway-service</module> -->
+    <module>gateway-service</module>
     <module>registry-service</module>
   </modules>
 
