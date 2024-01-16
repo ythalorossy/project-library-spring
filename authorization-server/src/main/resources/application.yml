@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: authorization-server
+  config:
+    import:
+    - "optional:configserver:http://user:1234@localhost:8888"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
