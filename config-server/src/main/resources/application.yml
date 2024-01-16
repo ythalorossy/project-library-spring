@@ -1,10 +1,33 @@
+server:
+  port: 8888
+
 spring:
+  application:
+    name: config-server
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/shared #tells spring where to locate the config files
-  profiles:    active: native #we are using native because the config server uses a git repo by default
-  security:    user:      password: 1234 #the password which apps will use to access its configurations
-      
-server:  port: 8888
+  profiles:
+    active: native #we are using native because the config server uses a git repo by default
+  security:
+    user:
+      password: 1234 #the password which apps will use to access its configurations
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
+    auditevents:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+        - info
+        - health
+        - metrics

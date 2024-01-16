@@ -4,3 +4,21 @@ spring:
   config:
     import:
     - "optional:configserver:http://user:1234@localhost:8888"
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
+    auditevents:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+        - info
+        - health
+        - metrics
+      
