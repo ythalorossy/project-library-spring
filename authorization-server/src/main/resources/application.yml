@@ -15,4 +15,4 @@ spring:
     password: authServerPass99$
   sql:
     init:
-      mode: always
+      mode: never # Set it with the value "always" once to create the database, after return it to "never"

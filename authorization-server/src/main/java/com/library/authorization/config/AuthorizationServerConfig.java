@@ -5,6 +5,7 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -125,7 +126,9 @@ public class AuthorizationServerConfig {
 
         JdbcRegisteredClientRepository clientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
 
-        clientRepository.save(oidcClient);
+        if (!Optional.ofNullable(clientRepository.findByClientId(oidcClient.getClientId())).isPresent()) {
+            clientRepository.save(oidcClient);
+        }
 
         return clientRepository;
     }
