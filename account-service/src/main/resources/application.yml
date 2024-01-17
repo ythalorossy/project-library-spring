@@ -1,0 +1,35 @@
+server:
+  servlet:
+    context-path: /accounts
+  port: 8010
+
+spring:
+  application:
+    name: account-service
+#   config:
+#     import:
+#     - "optional:configserver:http://user:1234@localhost:8888"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+          
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
+    auditevents:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+        - info
+        - health
+        - metrics
+      
+

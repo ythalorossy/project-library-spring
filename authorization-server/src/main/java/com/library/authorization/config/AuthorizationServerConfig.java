@@ -107,6 +107,7 @@ public class AuthorizationServerConfig {
         Consumer<Set<String>> scopes = c -> c.addAll(Set.of(
                 "product.read",
                 "product.write",
+                "account.write",
                 OidcScopes.OPENID,
                 OidcScopes.PROFILE));
 
