@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -12,9 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -71,11 +72,11 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-            .authorizeHttpRequests((authorize) -> authorize
-                    .anyRequest().authenticated())
-            // Form login handles the redirect to the login page from the
-            // authorization server filter chain
-            .formLogin(Customizer.withDefaults());
+                .authorizeHttpRequests((authorize) -> authorize
+                        .anyRequest().authenticated())
+                // Form login handles the redirect to the login page from the
+                // authorization server filter chain
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
@@ -97,17 +98,19 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository() {
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
+
         String clientId = "product-client";
         String clientSecret = "{noop}secret";
         String redirectUri = "http://127.0.0.1:8080/authorized";
         Consumer<Set<String>> scopes = c -> c.addAll(Set.of(
-            "product.read", 
-            "product.write",
-            OidcScopes.OPENID,
-            OidcScopes.PROFILE));
+                "product.read",
+                "product.write",
+                OidcScopes.OPENID,
+                OidcScopes.PROFILE));
 
-        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+        RegisteredClient oidcClient = RegisteredClient
+                .withId(UUID.randomUUID().toString())
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
@@ -116,13 +119,15 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .redirectUri(redirectUri)
                 .scopes(scopes)
-                // .postLogoutRedirectUri("http://127.0.0.1:8080/")
-                // .scope(OidcScopes.OPENID)
-                // .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .clientIdIssuedAt(Instant.now())
                 .build();
 
-        return new InMemoryRegisteredClientRepository(oidcClient);
+        JdbcRegisteredClientRepository clientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
+
+        clientRepository.save(oidcClient);
+
+        return clientRepository;
     }
 
     private static KeyPair generateRsaKey() {
@@ -152,7 +157,6 @@ public class AuthorizationServerConfig {
 
         JWKSet jwkSet = new JWKSet(rsaKey);
 
-        // return new ImmutableJWKSet<>(jwkSet);
         return ((jwtSelector, context) -> jwtSelector.select(jwkSet));
     }
 

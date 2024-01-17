@@ -9,3 +9,10 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/oauth2
+    username: postgres
+    password: authServerPass99$
+  sql:
+    init:
+      mode: always
