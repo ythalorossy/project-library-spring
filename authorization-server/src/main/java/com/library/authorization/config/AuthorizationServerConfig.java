@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +28,8 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -52,32 +56,58 @@ public class AuthorizationServerConfig {
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
+
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
+
         http
-                // Redirect to the login page when not authenticated from the
-                // authorization endpoint
-                .exceptionHandling((exceptions) -> exceptions
-                        .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint(LOGIN_URI),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
-                // Accept access tokens for User Info and/or Client Registration
-                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
+            // Redirect to the login page when not authenticated from the
+            // authorization endpoint
+            .exceptionHandling((exceptions) -> exceptions
+                    .defaultAuthenticationEntryPointFor(
+                            new LoginUrlAuthenticationEntryPoint(LOGIN_URI),
+                            new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+            // Accept access tokens for User Info and/or Client Registration
+            .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
 
     @Bean
     @Order(2)
+    public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
+
+        // chain would be invoked only for paths that start with /api/
+        http.securityMatcher("/api/**")
+            .authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers("/api/unprotected").permitAll()
+                    .anyRequest().authenticated())
+            // Ignoring session cookie
+            .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2ResourceServer((resourceServer) -> resourceServer
+                    .jwt(Customizer.withDefaults()))
+            // disabling csrf tokens for the sake of the example
+            .csrf(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated())
-                // Form login handles the redirect to the login page from the
-                // authorization server filter chain
-                .formLogin(Customizer.withDefaults());
+            .authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers(
+                            "/unprotected")
+                    .permitAll()
+                    .anyRequest().authenticated())
+            // .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+            // Form login handles the redirect to the login page from the
+            // authorization server filter chain
+            .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
@@ -167,6 +197,11 @@ public class AuthorizationServerConfig {
     @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        return new NimbusJwtEncoder(jwkSource);
     }
 
     @Bean
