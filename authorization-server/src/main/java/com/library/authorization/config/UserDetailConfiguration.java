@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
@@ -13,8 +15,12 @@ public class UserDetailConfiguration {
     @Bean
     UserDetailsManager users(DataSource dataSource) {
 
-        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        return new JdbcUserDetailsManager(dataSource);
+    }
 
-        return users;
+    @Bean
+    PasswordEncoder passwordEncoder() {
+
+        return new BCryptPasswordEncoder();
     }
 }

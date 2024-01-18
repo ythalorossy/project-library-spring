@@ -63,14 +63,14 @@ public class AuthorizationServerConfig {
                 .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
         http
-            // Redirect to the login page when not authenticated from the
-            // authorization endpoint
-            .exceptionHandling((exceptions) -> exceptions
-                    .defaultAuthenticationEntryPointFor(
-                            new LoginUrlAuthenticationEntryPoint(LOGIN_URI),
-                            new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
-            // Accept access tokens for User Info and/or Client Registration
-            .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
+                // Redirect to the login page when not authenticated from the
+                // authorization endpoint
+                .exceptionHandling((exceptions) -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint(LOGIN_URI),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+                // Accept access tokens for User Info and/or Client Registration
+                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
@@ -81,15 +81,15 @@ public class AuthorizationServerConfig {
 
         // chain would be invoked only for paths that start with /api/
         http.securityMatcher("/api/**")
-            .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers("/api/unprotected").permitAll()
-                    .anyRequest().authenticated())
-            // Ignoring session cookie
-            .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2ResourceServer((resourceServer) -> resourceServer
-                    .jwt(Customizer.withDefaults()))
-            // disabling csrf tokens for the sake of the example
-            .csrf(AbstractHttpConfigurer::disable);
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/unprotected").permitAll()
+                        .anyRequest().authenticated())
+                // Ignoring session cookie
+                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer((resourceServer) -> resourceServer
+                        .jwt(Customizer.withDefaults()))
+                // disabling csrf tokens for the sake of the example
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -99,15 +99,15 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-            .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(
-                            "/unprotected")
-                    .permitAll()
-                    .anyRequest().authenticated())
-            // .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-            // Form login handles the redirect to the login page from the
-            // authorization server filter chain
-            .formLogin(Customizer.withDefaults());
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(
+                                "/unprotected")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                // .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                // Form login handles the redirect to the login page from the
+                // authorization server filter chain
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
@@ -115,37 +115,7 @@ public class AuthorizationServerConfig {
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
 
-        String clientId = "product-client";
-        String clientSecret = "{noop}secret";
-        String redirectUri = "http://127.0.0.1:8080/authorized";
-        Consumer<Set<String>> scopes = c -> c.addAll(Set.of(
-                "product.read",
-                "product.write",
-                "account.write",
-                OidcScopes.OPENID,
-                OidcScopes.PROFILE));
-
-        RegisteredClient oidcClient = RegisteredClient
-                .withId(UUID.randomUUID().toString())
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri(redirectUri)
-                .scopes(scopes)
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .clientIdIssuedAt(Instant.now())
-                .build();
-
-        JdbcRegisteredClientRepository clientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-
-        if (!Optional.ofNullable(clientRepository.findByClientId(oidcClient.getClientId())).isPresent()) {
-            clientRepository.save(oidcClient);
-        }
-
-        return clientRepository;
+        return new JdbcRegisteredClientRepository(jdbcTemplate);
     }
 
     private static KeyPair generateRsaKey() {
