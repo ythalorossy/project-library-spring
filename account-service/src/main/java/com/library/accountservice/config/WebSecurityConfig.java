@@ -13,6 +13,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/actuator/**", "/actuator/info/**").permitAll()
+                .requestMatchers("/unprotected").permitAll()
                 .anyRequest().permitAll());
                 
         return http.build();
