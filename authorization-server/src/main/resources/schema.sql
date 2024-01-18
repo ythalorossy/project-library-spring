@@ -57,10 +57,25 @@ CREATE TABLE oauth2_registered_client (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE oauth2_authorization_consent (
     registered_client_id varchar(100) NOT NULL,
     principal_name varchar(200) NOT NULL,
     authorities varchar(1000) NOT NULL,
     PRIMARY KEY (registered_client_id, principal_name)
 );
+
+-- User Details
+
+CREATE TABLE users(
+	username varchar(50) NOT NULL PRIMARY KEY,
+	password varchar(500) NOT NULL,
+	enabled boolean NOT NULL
+);
+
+CREATE TABLE authorities (
+	username varchar(50) NOT NULL,
+	authority varchar(50) NOT NULL,
+	CONSTRAINT fk_authorities_users FOREIGN KEY(username) REFERENCES users(username)
+);
+
+CREATE UNIQUE INDEX ix_auth_username ON authorities (username,authority);

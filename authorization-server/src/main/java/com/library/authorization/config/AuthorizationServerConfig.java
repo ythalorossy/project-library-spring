@@ -113,22 +113,6 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        String role = "USER";
-        String password = "password";
-        String name = "user";
-        UserDetails userDetails = User.builder()
-                .username(name)
-                .roles(role)
-                .password(encoder.encode(password))
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
-
-    @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
 
         String clientId = "product-client";
