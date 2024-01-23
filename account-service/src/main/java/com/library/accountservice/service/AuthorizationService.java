@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient("authorization-server")
 public interface AuthorizationService {
 
-    record RequestClientRegistration(String clientId, String password, String redirectUri) {
+    record RequestClientRegistration(String clientId, String redirectUri) {
     };
 
-    record ResponseClientRegistration(String clientId, String password) {
+    record ResponseClientRegistration(String clientId, String secret, String notes) {
     };
 
     record UnprotectedResponse(String response) {

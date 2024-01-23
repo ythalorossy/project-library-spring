@@ -14,6 +14,27 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9000
+      client:
+        registration:
+          account-service:
+            authorization-grant-type: client_credentials
+            client-id: product-client
+            client-secret: secret
+            scope:
+            - product.read
+            - product.write
+            - account.write
+        provider:
+          account-service:
+            issuer-uri: http://localhost:9000
+            token-uri: http://localhost:9000/oauth2/token
+            authorization-uri: http://localhost:9000/oauth2/authorize
+
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+        clientRegistrationId: account-service
           
 management:
   endpoint:
