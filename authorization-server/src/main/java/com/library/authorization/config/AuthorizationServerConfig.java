@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
@@ -66,8 +67,10 @@ public class AuthorizationServerConfig {
         // chain would be invoked only for paths that start with /api/
         http.securityMatcher("/api/**")
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/unprotected").permitAll()
-                        .anyRequest().authenticated())
+                .requestMatchers(HttpMethod.POST, "/api/register")
+                    .hasAuthority("SCOPE_client.manage")
+                .requestMatchers("/api/unprotected").permitAll()
+                .anyRequest().authenticated())
                 // Ignoring session cookie
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((resourceServer) -> resourceServer

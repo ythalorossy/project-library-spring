@@ -16,7 +16,7 @@ public class JwtSecurityConfig {
         httpSecurity
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/new/app")
-                    .hasAuthority("SCOPE_account.write")
+                    .hasAuthority("SCOPE_client.manage")
                 .requestMatchers(HttpMethod.GET, "/unprotected")
                     .permitAll())
             .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))

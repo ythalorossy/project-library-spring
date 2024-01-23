@@ -23,7 +23,7 @@ spring:
             scope:
             - product.read
             - product.write
-            - account.write
+            - client.manage
         provider:
           account-service:
             issuer-uri: http://localhost:9000
