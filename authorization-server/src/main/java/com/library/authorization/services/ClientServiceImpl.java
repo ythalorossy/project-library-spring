@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import com.library.authorization.exceptions.ClientNotFoundException;
 
 @Service
-public class RegisteredClientServiceImpl implements RegisteredClientService {
+public class ClientServiceImpl implements ClientService {
 
     public record ClientToRegister(String clientId, String redirectUri) {
     }
@@ -31,7 +31,7 @@ public class RegisteredClientServiceImpl implements RegisteredClientService {
     private RegisteredClientRepository registeredClientRepository;
     private PasswordEncoder passwordEncoder;
 
-    public RegisteredClientServiceImpl(
+    public ClientServiceImpl(
             RegisteredClientRepository registeredClientRepository,
             PasswordEncoder passwordEncoder) {
 
@@ -61,7 +61,6 @@ public class RegisteredClientServiceImpl implements RegisteredClientService {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 // TODO: extract a function to set redirect Uri for a client
                 .redirectUri(clientToRegister.redirectUri())
-                // TODO: extract a function to add scope for a client
                 .scopes(c -> c.addAll(emptySet()))
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .clientIdIssuedAt(Instant.now())
@@ -80,7 +79,6 @@ public class RegisteredClientServiceImpl implements RegisteredClientService {
         Optional<RegisteredClient> registeredClientById = loadRegisteredClientById(clientToRegister.clientId());
 
         if (registeredClientById.isPresent()) {
-            // TODO: Need to find a way to decode the secret before return it
             RegisteredClient client = registeredClientById.get();
             clientRegistered = new ClientRegistered(client.getClientId(), client.getClientSecret(), emptySet());
 

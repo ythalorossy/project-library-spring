@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.library.authorization.services.RegisteredClientService;
+import com.library.authorization.services.ClientService;
 import com.library.authorization.services.UserService;
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
+import com.library.authorization.services.ClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.ClientServiceImpl.ClientToRegister;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -23,7 +23,7 @@ public class AuthorizationServerApplication {
 
 	@Bean
 	ApplicationRunner runner(UserService userService,
-			RegisteredClientService registeredClientService,
+			ClientService registeredClientService,
 			PasswordEncoder passwordEncoder) {
 		return vars -> {
 			userService.createUser(User.builder()

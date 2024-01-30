@@ -2,13 +2,12 @@ package com.library.authorization.services;
 
 import java.util.Set;
 
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
+import com.library.authorization.services.ClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.ClientServiceImpl.ClientToRegister;
 
 import jakarta.ws.rs.NotFoundException;
 
-// TODO: Change the name if this interface. Maybe ClientService
-public interface RegisteredClientService {
+public interface ClientService {
 
     public ClientRegistered registerClient(ClientToRegister clientToRegister);
 

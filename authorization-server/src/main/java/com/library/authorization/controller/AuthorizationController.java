@@ -3,9 +3,9 @@ package com.library.authorization.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.authorization.config.Authorization;
-import com.library.authorization.services.RegisteredClientService;
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
+import com.library.authorization.services.ClientService;
+import com.library.authorization.services.ClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.ClientServiceImpl.ClientToRegister;
 
 import jakarta.ws.rs.NotFoundException;
 import java.util.Set;
@@ -26,9 +26,9 @@ public class AuthorizationController {
     record RequestAddScopesToClient(String clientId, String ...scopes) { };
     record ResponseAddScopesToClient(String clientId, String ...scopes) { };
 
-    private RegisteredClientService registeredClientService;
+    private ClientService registeredClientService;
 
-    public AuthorizationController(RegisteredClientService registeredClientService) {
+    public AuthorizationController(ClientService registeredClientService) {
         this.registeredClientService = registeredClientService;
     }
 
