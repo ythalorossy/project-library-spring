@@ -5,24 +5,25 @@ import static java.util.Optional.ofNullable;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient.Builder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.stereotype.Service;
 
+import jakarta.ws.rs.NotFoundException;
+
 @Service
 public class RegisteredClientServiceImpl implements RegisteredClientService {
 
-    public record ClientToRegister(String clientId, String redirectUri) {
-    }
-
-    public record ClientRegistered(String clientId, String secret) {
-    }
+    public record ClientToRegister(String clientId, String redirectUri) { }
+    public record ClientRegistered(String clientId, String secret, Set<String> scopes) { }
 
     private RegisteredClientRepository registeredClientRepository;
     private PasswordEncoder passwordEncoder;
@@ -65,7 +66,7 @@ public class RegisteredClientServiceImpl implements RegisteredClientService {
 
         registeredClientRepository.save(registeredClient);
 
-        return new ClientRegistered(clientToRegister.clientId(), secret);
+        return new ClientRegistered(clientToRegister.clientId(), secret, Collections.emptySet());
     }
 
     @Override
@@ -78,12 +79,29 @@ public class RegisteredClientServiceImpl implements RegisteredClientService {
         if (registeredClientById.isPresent()) {
             // TODO: Need to find a way to decode the secret before return it
             RegisteredClient registeredClient = registeredClientById.get();
-            clientRegistered = new ClientRegistered(registeredClient.getClientId(), registeredClient.getClientSecret());
+            clientRegistered = new ClientRegistered(registeredClient.getClientId(), registeredClient.getClientSecret(), Collections.emptySet());
 
         } else {
             clientRegistered = register(clientToRegister);
         }
 
         return clientRegistered;
+    }
+
+    @Override
+    public ClientRegistered addScopesToClient(String clientId, Set<String> scopes) throws NotFoundException {
+
+        RegisteredClient client = loadRegisteredClientById(clientId).orElseThrow(NotFoundException::new);
+
+        final Builder fromClientBuilder = RegisteredClient.from(client);
+        for (String scope : scopes) {
+            fromClientBuilder.scope(scope);
+        }
+
+        RegisteredClient clientToBeUpdated = fromClientBuilder.build();
+
+        this.registeredClientRepository.save(clientToBeUpdated);
+
+        return new ClientRegistered(clientToBeUpdated.getClientId(), null, clientToBeUpdated.getScopes());
     }
 }
