@@ -50,18 +50,9 @@ public class AuthorizationController {
     @PreAuthorize(Authorization.OAUTH2_HAS_SCOPE_CLIENT_MANAGE)
     public ResponseEntity<ResponseAddScopesToClient> addScopesToClient(@RequestBody RequestAddScopesToClient requestAddScopesToClient) {
         
-        ClientRegistered clientRegistered;
-
-        try {
-            clientRegistered = this.registeredClientService
-                    .addScopesToClient(requestAddScopesToClient.clientId, Set.of(requestAddScopesToClient.scopes));
-                    
-                    return ResponseEntity.ok(new ResponseAddScopesToClient(clientRegistered.clientId(), clientRegistered.scopes().stream().collect(Collectors.joining(","))));
-        
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-
+        ClientRegistered clientRegistered = this.registeredClientService
+                .addScopesToClient(requestAddScopesToClient.clientId, Set.of(requestAddScopesToClient.scopes));
+                
+        return ResponseEntity.ok(new ResponseAddScopesToClient(clientRegistered.clientId(), clientRegistered.scopes().stream().collect(Collectors.joining(","))));
     }
-    
 }
