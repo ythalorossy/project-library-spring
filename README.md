@@ -7,6 +7,10 @@ The objective of this project is to test the Spring Boot umbrella.
 ## Modules
 
 ### Configuration Server
+Centralize the modules configuration.
+
+### Discovery
+Netflix Eureka to register and discovery of applications
 
 ### Gateway 
 Acts as a application gateway that used the Discovery server to find the services.
@@ -20,8 +24,10 @@ Acts as a service to maipulate users. Must be exclude
 
 ### Categories
 Not implemented. It will act as category service.
+
 ### Books
 Not implemented. It will act as a catalog of book service.
+
 ### Rents
 Not implemented. It will act a book rent service.
 
