@@ -1,4 +1,4 @@
-package com.library.authorization.service;
+package com.library.authorization.services;
 
 import static java.util.Collections.emptySet;
 import static java.util.Optional.ofNullable;

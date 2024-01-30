@@ -1,4 +1,4 @@
-package com.library.authorization.service;
+package com.library.authorization.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

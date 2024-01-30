@@ -1,9 +1,9 @@
-package com.library.authorization.service;
+package com.library.authorization.services;
 
 import java.util.Set;
 
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientToRegister;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
 
 import jakarta.ws.rs.NotFoundException;
 

@@ -7,10 +7,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.library.authorization.service.RegisteredClientService;
-import com.library.authorization.service.UserService;
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientToRegister;
+
+import com.library.authorization.services.RegisteredClientService;
+import com.library.authorization.services.UserService;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
 
 @SpringBootApplication
 @EnableDiscoveryClient

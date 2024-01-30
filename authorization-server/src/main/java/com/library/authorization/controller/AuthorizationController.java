@@ -3,9 +3,9 @@ package com.library.authorization.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.authorization.config.Authorization;
-import com.library.authorization.service.RegisteredClientService;
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientRegistered;
-import com.library.authorization.service.RegisteredClientServiceImpl.ClientToRegister;
+import com.library.authorization.services.RegisteredClientService;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientRegistered;
+import com.library.authorization.services.RegisteredClientServiceImpl.ClientToRegister;
 
 import jakarta.ws.rs.NotFoundException;
 import java.util.Set;
