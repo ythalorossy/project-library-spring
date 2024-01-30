@@ -1,14 +1,16 @@
 package com.library.authorization.config;
 
+import static org.apache.logging.log4j.util.Strings.concat;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
@@ -27,6 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
+import com.library.authorization.controller.Uris;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -34,8 +37,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class AuthorizationServerConfig {
-
-    private static final String LOGIN_URI = "/login";
 
     @Bean
     @Order(1)
@@ -52,7 +53,7 @@ public class AuthorizationServerConfig {
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint(LOGIN_URI),
+                                new LoginUrlAuthenticationEntryPoint(Uris.LOGIN_URI),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
                 // Accept access tokens for User Info and/or Client Registration
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
@@ -65,11 +66,14 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
 
         // chain would be invoked only for paths that start with /api/
-        http.securityMatcher("/api/**")
+        http.securityMatcher(concat(Uris.AUTH_API, "/**"))
                 .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/register")
-                    .hasAuthority("SCOPE_client.manage")
-                .requestMatchers("/api/unprotected").permitAll()
+
+                // .requestMatchers(HttpMethod.POST, concat(Uris.AUTH_API, Uris.REGISTER))
+                //     .hasAuthority("SCOPE_client.manage")
+
+                .requestMatchers(concat(Uris.AUTH_API, Uris.UNPROTECTED)).permitAll()
+
                 .anyRequest().authenticated())
                 // Ignoring session cookie
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -87,9 +91,7 @@ public class AuthorizationServerConfig {
             throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(
-                                "/unprotected")
-                        .permitAll()
+                        .requestMatchers(Uris.UNPROTECTED).permitAll()
                         .anyRequest().authenticated())
                 // .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
                 // Form login handles the redirect to the login page from the

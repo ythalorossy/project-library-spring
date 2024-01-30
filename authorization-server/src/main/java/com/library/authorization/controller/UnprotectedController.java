@@ -10,7 +10,7 @@ record UnprotectedResponse(String response) {
 @RestController
 public class UnprotectedController {
 
-    @GetMapping("/unprotected")
+    @GetMapping(Uris.UNPROTECTED)
     public ResponseEntity<UnprotectedResponse> unprotected() {
 
         return ResponseEntity.ok(new UnprotectedResponse("Unprotected information"));

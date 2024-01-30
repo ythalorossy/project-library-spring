@@ -2,24 +2,23 @@ package com.library.authorization.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.library.authorization.config.Authorization;
 import com.library.authorization.service.RegisteredClientService;
 import com.library.authorization.service.RegisteredClientServiceImpl.ClientRegistered;
 import com.library.authorization.service.RegisteredClientServiceImpl.ClientToRegister;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-record RequestClientRegistration(String clientId, String redirectUri) {
-};
-
-record ResponseClientRegistration(String clientId, String secret, String notes) {
-};
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping(Uris.AUTH_API)
 public class AuthorizationController {
+
+    record RequestClientRegistration(String clientId, String redirectUri) { };
+    record ResponseClientRegistration(String clientId, String secret, String notes) { };
 
     private RegisteredClientService registeredClientService;
 
@@ -27,7 +26,8 @@ public class AuthorizationController {
         this.registeredClientService = registeredClientService;
     }
 
-    @PostMapping("/register")
+    @PostMapping(Uris.REGISTER)
+    @PreAuthorize(Authorization.OAUTH2_HAS_SCOPE_CLIENT_MANAGE)
     public ResponseEntity<ResponseClientRegistration> registerClient(
             @RequestBody RequestClientRegistration requestClientRegistrationDto) {
 
