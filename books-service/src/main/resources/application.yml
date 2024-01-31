@@ -21,4 +21,11 @@ management:
         - info
         - health
         - metrics
+server:
+  port: 0
+
+eureka:
+  instance:
+    instance-id: ${random.uuid}
+    
       

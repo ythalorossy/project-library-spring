@@ -1,5 +1,3 @@
-
 server:
   servlet:
     context-path: /books
-  port: 8030
